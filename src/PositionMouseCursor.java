@@ -4,6 +4,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Robot;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class PositionMouseCursor {
 
@@ -15,6 +17,8 @@ public class PositionMouseCursor {
             System.err.println("Selected Monitor index is out of bounds.\nTotal monitors: " + monitors.length);
             System.exit(1);
         }
+        
+        // System.out.println( Arrays.toString( monitors ) );
 
         MonitorDimension selectedMonitor = monitors[ selectedMonitorIndex ];
         int x = selectedMonitor.x + (selectedMonitor.width / 2);
@@ -33,6 +37,8 @@ public class PositionMouseCursor {
             Rectangle bounds = gs[i].getDefaultConfiguration().getBounds();
             monitors[ i ] = new MonitorDimension( dm.getWidth(), dm.getHeight(), bounds.x, bounds.y );
         }
+        // Sorting to keep shortcuts the same based on monitor arrangement
+        Arrays.sort( monitors, new SortByArrangement() );
         return monitors;
     }
 
@@ -69,6 +75,12 @@ public class PositionMouseCursor {
                     .append( y )
                     .append(")")
                     .toString();
+        }
+    }
+    
+    private static class SortByArrangement implements Comparator<MonitorDimension> {
+        public int compare( MonitorDimension a, MonitorDimension b ) {
+            return a.x - b.x;
         }
     }
 }
